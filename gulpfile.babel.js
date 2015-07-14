@@ -1,6 +1,9 @@
 // generated on 2015-07-13 using generator-gulp-webapp 1.0.3
 import gulp from 'gulp';
 import gulpLoadPlugins from 'gulp-load-plugins';
+import browserify from 'browserify';
+import babelify from 'babelify';
+import source from 'vinyl-source-stream';
 import browserSync from 'browser-sync';
 import del from 'del';
 import {stream as wiredep} from 'wiredep';
@@ -89,7 +92,18 @@ gulp.task('extras', () => {
 
 gulp.task('clean', del.bind(null, ['.tmp', 'dist']));
 
-gulp.task('serve', ['styles', 'fonts'], () => {
+gulp.task('browserify', () => {
+  return browserify("./app/scripts/main.js", { fullPaths: true, debug: true })
+  .transform(babelify)
+  .bundle()
+  .on("error", function (err) { console.log("Error : " + err.message); })
+  .pipe(source("main.js"))
+  .pipe(gulp.dest('.tmp/scripts'))
+  .pipe(reload({stream: true}));
+  ;
+});
+
+gulp.task('serve', ['styles', 'fonts', 'browserify'], () => {
   browserSync({
     notify: false,
     port: 9000,
@@ -109,6 +123,7 @@ gulp.task('serve', ['styles', 'fonts'], () => {
   ]).on('change', reload);
 
   gulp.watch('app/styles/**/*.scss', ['styles']);
+  gulp.watch('app/scripts/**/*.js', ['browserify']);
   gulp.watch('app/fonts/**/*', ['fonts']);
   gulp.watch('bower.json', ['wiredep', 'fonts']);
 });
