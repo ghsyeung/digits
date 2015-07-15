@@ -1,4 +1,4 @@
-import { NN30, NN50 } from './nn';
+import { NN } from './nn';
 
 (function() {
   var $ = function(id) {
@@ -60,12 +60,14 @@ import { NN30, NN50 } from './nn';
       return x / 255.0; 
     });
 
-    result_vec = NN30.neuralNetworkGuess(normalized_bitarr);
+    result_vec = NN.NN30.neuralNetworkGuess(normalized_bitarr);
     console.log(result_vec);
 
-    result_vec = NN50.neuralNetworkGuess(normalized_bitarr);
+    result_vec = NN.NN50.neuralNetworkGuess(normalized_bitarr);
     console.log(result_vec);
 
+    result_vec = NN.NN20.neuralNetworkGuess(normalized_bitarr);
+    console.log(result_vec);
   };
 
   canvas.setHeight(112);

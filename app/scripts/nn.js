@@ -1,29 +1,25 @@
 import { vecAdd, vecDot, sigmoid } from './helpers';
-export let NN30, NN50;
+export let NN = {
+  NN30: null, 
+  NN50: null, 
+  NN20: null
+};
 
-(function() {
-  $.getJSON("data/weights.json", function(w) {
+let load_nn_with_suffix = (id, suffix) => {
+  $.getJSON("data/weights" + suffix + ".json", function(w) {
     if (w) {
-      $.getJSON("data/biases.json", function(b) {
+      $.getJSON("data/biases" + suffix + ".json", function(b) {
         if (b) {
-          NN30 = new NeuralNetwork(w, b);
+          NN[id] = new NeuralNetwork(w, b);
         }
       });
     }
   });
-})();
+};
 
-(function() {
-  $.getJSON("data/weights_50.json", function(w) {
-    if (w) {
-      $.getJSON("data/biases_50.json", function(b) {
-        if (b) {
-          NN50 = new NeuralNetwork(w, b);
-        }
-      });
-    }
-  });
-})();
+load_nn_with_suffix("NN30", "");
+load_nn_with_suffix("NN50", "_50");
+load_nn_with_suffix("NN20", "_20");
 
 export class NeuralNetwork {
   constructor(weights, biases) {
